@@ -13,7 +13,10 @@ for i = 1:length(R)
         % Stockage de la fréquence dans la matrice
         frequencies(i, j) = f;
         % Affichage de la valeur de R et C correspondant à la fréquence calculée
-        disp(['Pour une fréquence de ', num2str(f), ' Hz, R = ', num2str(R(i)), ' ohms et C = ', num2str(C(j)), ' farads']);
+        % Pour filtrer la PWM et garder les 1Hz donc entre 1 et 100 Hz, on affiche : 
+        if f<100 
+            disp(['Pour une fréquence de ', num2str(f), ' Hz, R = ', num2str(R(i)), ' ohms et C = ', num2str(C(j)), ' farads']);
+        end
     end
 end
 
