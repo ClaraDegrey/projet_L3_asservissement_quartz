@@ -10,7 +10,7 @@ extern USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface;
 extern FILE USBSerialStream;
 
 volatile uint16_t captureValue;
-uint32_t captureValue2=16000000;
+uint32_t captureValue2=16000000; //fréquence théorique du Quartz = 16MHz
 uint16_t diff;
 volatile uint8_t captureFlag = 0;
 
