@@ -32,7 +32,6 @@ int main (void){
 	GlobalInterruptEnable();
 	DDRE|=(1<<6);
 	PORTE&=(~(1<<6));  
-	 short res;
 	 short d=0;
 	 char s[8];
 	pwm_configure();
@@ -40,10 +39,7 @@ int main (void){
 		d=500;//if (d>1023) d=1; // varie le temps a l'etat haut
 		pwmD_configure(d);
 		_delay_ms(5);
-		sprintf(s,"%04d ",d);
-		fputs(s, &USBSerialStream);
-		res=adc_read(7);
-		sprintf(s,"%04d\r\n",res);
+		sprintf(s,"%04d\r\n ",d);
 		fputs(s, &USBSerialStream);
 		CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface);
 		CDC_Device_USBTask(&VirtualSerial_CDC_Interface);
