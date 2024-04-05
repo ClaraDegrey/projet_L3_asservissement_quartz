@@ -10,19 +10,16 @@ extern USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface;
 extern FILE USBSerialStream;
 
 volatile uint16_t captureValue;
-volatile uint16_t captureValue2=0;
 volatile uint8_t captureFlag = 0;
-volatile uint16_t d = 512;
 // pmw
 void pwm_configure()        // called once for initialization
 {
  TCCR4B=(1<<CS40);
  TC4H=0x03;
- OCR4C=255;//varie la frèquence
+ OCR4C=255;//varie la fréquence
  TCCR4C|=0x09;              // Activate channel D
  DDRD|=1<<7;
- 
-            // Set GPIO Output Mode
+          // Set GPIO Output Mode
 }
 void adc_init() {
     DIDR0=0xff;
@@ -56,39 +53,40 @@ int main(void) {
 
     TIMSK1 |= (1 << ICIE1);
     TCCR1B |=(1<<CS10); //pas de prescaler;
-    volatile uint16_t diff;
-    //short res;
-    //short d=0;
-    //char s[8];
+    volatile long diff;
+    int16_t d = 512;
+    uint16_t captureValue2=0;
     pwm_configure();
     adc_init();
     short fc=9964;
     signed short erreur=0;
     signed short erreur2=0;
-    signed short erreur3=0;
     char buffer[10];
+    pwmD_configure(d);
+
     while (1) {
        //input capture
         if (captureFlag) {
            
             diff=captureValue-captureValue2;
-            if ((captureValue-captureValue2)>10400){
-           diff=10400;
-        }
-          erreur3=erreur2;
+            sprintf(buffer, "%ld ", diff); 
+            fputs(buffer, &USBSerialStream);
+
+            
+          if (diff<0) diff+=65536;
           erreur2=erreur;
-          erreur=diff-fc;
+          erreur=fc-diff;
           
           /////////////////////////////////////////////////////
-          sprintf(buffer, "%d ", erreur); // Conversion de captureValue en hexadécimal
+          sprintf(buffer, "%d ", erreur); 
             fputs(buffer, &USBSerialStream);
             /////////////////////////////////////////////////:
             /////////////////////////////////////////////////////
-          sprintf(buffer, "%d ", erreur2); // Conversion de captureValue en hexadécimal
+          sprintf(buffer, "%d ", erreur2); 
             fputs(buffer, &USBSerialStream);
             /////////////////////////////////////////////////:
           
-          d=d+((252*(erreur2-erreur))/100+(216*erreur)/100);//+((erreur+erreur3)-(2*erreur2)));
+          d+=((108*(erreur2-erreur))/100+(56*erreur)/100);
            if (d<0){
               d=0;
             }else if (d>1023){
@@ -97,11 +95,11 @@ int main(void) {
             
             captureValue2=captureValue;
             
-           pwmD_configure(d);
+            pwmD_configure(d);
             ////////////////////////////////////////////
-            sprintf(buffer, "%u ", diff); // Conversion de captureValue en hexadécimal
+            sprintf(buffer, "%ld ", diff); 
             fputs(buffer, &USBSerialStream);
-            sprintf(buffer, "%u\r\n", d); // Conversion de captureValue en hexadécimal
+            sprintf(buffer, "%u\r\n", d); 
             fputs(buffer, &USBSerialStream);
             CDC_Device_USBTask(&VirtualSerial_CDC_Interface);
             USB_USBTask();
@@ -112,3 +110,4 @@ int main(void) {
     }
     return 0;
 }
+

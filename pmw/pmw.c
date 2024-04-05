@@ -16,7 +16,7 @@ void pwm_configure()        // called once for initialization
  TCCR4C=0;
  TCCR4D=0;
  TC4H=0x03;
- OCR4C=150;//varie la frèquence
+ OCR4C=150;//varie la fréquence
  TCCR4C|=0x09;              // Activate channel D
  DDRD|=1<<7; 
   

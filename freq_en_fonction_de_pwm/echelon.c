@@ -19,7 +19,7 @@ void pwm_configure()        // called once for initialization
 {
  TCCR4B=(1<<CS40);
  TC4H=0x03;
- OCR4C=255;//varie la frèquence
+ OCR4C=255;//varie la fréquence
  TCCR4C|=0x09;              // Activate channel D
  DDRD|=1<<7;
  
@@ -58,23 +58,10 @@ int main(void) {
     TIMSK1 |= (1 << ICIE1);
     TCCR1B |=(1<<CS10); //pas de prescaler;
     volatile uint16_t diff;
-    //short res;
-    //short d=0;
-    //char s[8];
     pwm_configure();
     adc_init();
 
     while (1) {
-    //d+=1;if (d>1023) d=1; // varie le temps a l'etat haut
-    //pwmD_configure(d);
-     //_delay_ms(2000);
-    //sprintf(s,"%04d ",d);
-    //fputs(s, &USBSerialStream);
-    //res=adc_read(7);
-    //sprintf(s,"%04d\r\n",res);
-    //fputs(s, &USBSerialStream);
-         
-       
         //input capture
         if (captureFlag) {
             diff=captureValue-captureValue2;
@@ -87,9 +74,9 @@ int main(void) {
 			pwmD_configure(d);
             captureValue2=captureValue;
             char buffer[10];
-            sprintf(buffer, "%u", diff); // Conversion de captureValue en hexadécimal
+            sprintf(buffer, "%u", diff); 
             fputs(buffer, &USBSerialStream);
-            sprintf(buffer, "%u\r\n", c); // Conversion de captureValue en hexadécimal
+            sprintf(buffer, "%u\r\n", c); 
             fputs(buffer, &USBSerialStream);
             CDC_Device_USBTask(&VirtualSerial_CDC_Interface);
             USB_USBTask();
