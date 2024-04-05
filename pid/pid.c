@@ -21,18 +21,7 @@ void pwm_configure()        // called once for initialization
  DDRD|=1<<7;
           // Set GPIO Output Mode
 }
-void adc_init() {
-    DIDR0=0xff;
-    ADMUX=(1<<REFS0);
-    ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
-}
-unsigned short adc_read(uint8_t channel) {
-    channel &= 0x07;
-    ADMUX=(ADMUX & 0xF8)|channel;
-    ADCSRA |= (1<<ADSC);
-    while(ADCSRA & (1<<ADSC));
-return ADC;
-}
+
 void pwmD_configure(short val) // Timer4 D: update duty cycle to val
 {TC4H=(val>>8)&3;
  OCR4D=(char)(val&0xff);
@@ -57,7 +46,6 @@ int main(void) {
     int16_t d = 512;
     uint16_t captureValue2=0;
     pwm_configure();
-    adc_init();
     short fc=9964;
     signed short erreur=0;
     signed short erreur2=0;
