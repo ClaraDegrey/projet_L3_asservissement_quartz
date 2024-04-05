@@ -24,18 +24,7 @@ void pwm_configure()        // called once for initialization
  
             // Set GPIO Output Mode
 }
-void adc_init() {
-    DIDR0=0xff;
-    ADMUX=(1<<REFS0);
-    ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
-}
-unsigned short adc_read(uint8_t channel) {
-    channel &= 0x07;
-    ADMUX=(ADMUX & 0xF8)|channel;
-    ADCSRA |= (1<<ADSC);
-    while(ADCSRA & (1<<ADSC));
-return ADC;
-}
+
 void pwmD_configure(short val) // Timer4 D: update duty cycle to val
 {TC4H=(val>>8)&3;
  OCR4D=(char)(val&0xff);
@@ -59,7 +48,6 @@ int main(void) {
     TCCR1B |=(1<<CS10); //pas de prescaler;
     volatile uint16_t diff;
     pwm_configure();
-    adc_init();
 
     while (1) {
     //d+=1;if (d>1023) d=1; // varie le temps a l'etat haut
